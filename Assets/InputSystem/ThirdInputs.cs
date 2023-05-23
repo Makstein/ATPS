@@ -38,15 +38,18 @@ namespace InputSystem
         {
             switch (context)
             {
-                case { performed: true, interaction: HoldInteraction }:
+                case { started: true, interaction: TapInteraction }:
                     tapFire = true;
+                    break;
+                case { started: true, interaction: HoldInteraction }:
                     holdFire = true;
                     break;
-                case { performed: true, interaction: TapInteraction }:
-                    tapFire = true;
+                case { performed: true, interaction: HoldInteraction }:
+                    holdFire = true;
                     break;
                 case { canceled: true, interaction: HoldInteraction }:
                     holdFire = false;
+                    tapFire = false;
                     break;
             }
         }

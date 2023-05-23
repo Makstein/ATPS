@@ -327,7 +327,7 @@ namespace Game.Shared
                     return TryShoot();
 
                 case WeaponShootType.Automatic:
-                    if (!inputHeld) return false;
+                    if (!inputHeld && !inputDown) return false;
                     return TryShoot();
 
                 case WeaponShootType.Charge:
