@@ -1,0 +1,5 @@
+# ATPS
+
+Unity个人练手项目，第三人称射击游戏，参考Unity官方第一人称射击游戏模板项目实现，更改模型、地图，将控制系统更改为使用Cinemachine Camera和Input System的第三人称控制，添加第三人称模型，并使用Animator Controller构建相应的动画状态机，本身包含敌人行为状态机、Nav Agent路径导航、武器及子弹控制系统、伤害血量及血量的全局显示、简单的游戏流程消息系统等。
+
+非常简陋，尚未完善，本身使用Plastic作为版本控制，GitHub仅作备份及公开展示
