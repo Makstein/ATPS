@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028355, g: 0.22571374, b: 0.30692255, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_Follow: {fileID: 136431491}
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 10
@@ -281,14 +281,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 94753346}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.15261395, y: -0.68666387, z: 0.69648683, w: -0.14180225}
+  m_LocalPosition: {x: 0.076, y: -0.085, z: -0.129}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2003894020}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 65.955, y: 88.537, z: 267.641}
 --- !u!114 &103211348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,7 +400,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 136431490}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1662,14 +1662,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 824472766}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.58147705, y: -0.7635883, z: -0.22564898, w: 0.16703282}
+  m_LocalPosition: {x: -0.066, y: -0.057, z: 0.447}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2003894020}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -32.606, y: -180.499, z: 74.725}
 --- !u!1 &874240376
 GameObject:
   m_ObjectHideFlags: 0
@@ -3933,8 +3933,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003894019}
-  m_LocalRotation: {x: 0.051243253, y: -0.66326666, z: 0.07820511, w: 0.7425196}
-  m_LocalPosition: {x: 0.17, y: 1.403, z: 0.21}
+  m_LocalRotation: {x: 0.12681901, y: -0.6521808, z: 0.14567983, w: 0.7330447}
+  m_LocalPosition: {x: 0.16977927, y: 1.1708041, z: 0.14999798}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3942,7 +3942,7 @@ Transform:
   - {fileID: 94753347}
   m_Father: {fileID: 198190481}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 10.36, y: -83.292, z: 2.806}
+  m_LocalEulerAnglesHint: {x: 22.083, y: -82.737, z: 2.979}
 --- !u!114 &2018183135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3964,7 +3964,7 @@ MonoBehaviour:
   DownWeaponPosition: {fileID: 635484678}
   BobFrequency: 10
   BobSharpness: 10
-  DefaultBobAmount: 0.2
+  DefaultBobAmount: 0.1
   AimingBobAmount: 0.02
   RecoilSharpness: 50
   MaxRecoilDistance: 0.2
@@ -3989,7 +3989,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RigLayers:
-  - m_Rig: {fileID: 0}
+  - m_Rig: {fileID: 138394254}
     m_Active: 1
   m_Effectors: []
 --- !u!1 &2066240785
@@ -4015,14 +4015,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066240785}
-  m_LocalRotation: {x: 0.051243253, y: -0.66326666, z: 0.07820511, w: 0.7425196}
-  m_LocalPosition: {x: 0.17, y: 1.17, z: 0.15}
+  m_LocalRotation: {x: 0.12681901, y: -0.6521808, z: 0.14567983, w: 0.7330447}
+  m_LocalPosition: {x: 0.217, y: 1.133, z: 0.146}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 198190481}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 10.36, y: -83.292, z: 2.806}
+  m_LocalEulerAnglesHint: {x: 22.083, y: -82.737, z: 2.979}
 --- !u!1 &2087624041
 GameObject:
   m_ObjectHideFlags: 0

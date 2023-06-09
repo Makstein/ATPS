@@ -274,28 +274,28 @@ namespace GamePlay.Managers
                 {
                     case WeaponSwitchState.PutDownPrevious:
                     {
-                        // Deactivate old weapon
-                        var oldWeapon = GetWeaponAtSlotIndex(ActiveWeaponIndex);
-                        if (oldWeapon != null) oldWeapon.ShowWeapon(false);
-
-                        ActiveWeaponIndex = m_WeaponSwitchNewWeaponIndex;
-                        switchingTimeFactor = 0f;
-
-                        // Activate new weapon
-                        var newWeapon = GetWeaponAtSlotIndex(ActiveWeaponIndex);
-                        OnSwitchedToWeapon?.Invoke(newWeapon);
-
-                        if (newWeapon)
+                        if (ActiveWeaponIndex != m_WeaponSwitchNewWeaponIndex)
                         {
-                            m_TimeStartedWeaponSwitch = Time.time;
-                            m_WeaponSwitchState = WeaponSwitchState.PutUpNew;
-                        }
-                        else
-                        {
-                            // if new weapon is null, don't follow through with putting weapon back up
-                            m_WeaponSwitchState = WeaponSwitchState.Down;
+                            // Deactivate old weapon
+                            var oldWeapon = GetWeaponAtSlotIndex(ActiveWeaponIndex);
+                            if (oldWeapon != null) oldWeapon.ShowWeapon(false);
+                            
+                            ActiveWeaponIndex = m_WeaponSwitchNewWeaponIndex;
+                            switchingTimeFactor = 0f;
+
+                            // Activate new weapon
+                            var newWeapon = GetWeaponAtSlotIndex(ActiveWeaponIndex);
+                            OnSwitchedToWeapon?.Invoke(newWeapon);
+
+                            if (newWeapon)
+                            {
+                                m_TimeStartedWeaponSwitch = Time.time;
+                                m_WeaponSwitchState = WeaponSwitchState.PutUpNew;
+                                break;
+                            }
                         }
 
+                        m_WeaponSwitchState = WeaponSwitchState.Down;
                         break;
                     }
                     case WeaponSwitchState.PutUpNew:
