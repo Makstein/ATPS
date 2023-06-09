@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game;
 using Game.Shared;
@@ -67,6 +68,8 @@ namespace GamePlay
         private Vector3 m_TrajectoryCorrectionVector;
         private Vector3 m_Velocity;
 
+        private readonly RaycastHit[] hits = new RaycastHit[100]; // 用于在Update中的球体检测结果储存
+
         private void Update()
         {
             // Move
@@ -86,7 +89,8 @@ namespace GamePlay
                 m_ConsumeTrajectoryCorrectionVector += correctionThisFrame;
 
                 // Detect end of correction
-                if (m_ConsumeTrajectoryCorrectionVector.sqrMagnitude == m_TrajectoryCorrectionVector.sqrMagnitude)
+                if (Math.Abs(m_ConsumeTrajectoryCorrectionVector.sqrMagnitude -
+                             m_TrajectoryCorrectionVector.sqrMagnitude) < 0.001)
                     m_HasTrajectoryOverride = false;
 
                 transform.position += correctionThisFrame;
@@ -98,24 +102,25 @@ namespace GamePlay
             // Gravity
             if (GravityDownAcceleration > 0)
                 // add gravity to the projectile for ballistic effect
-                m_Velocity += Vector3.down * GravityDownAcceleration * Time.deltaTime;
+                m_Velocity += Vector3.down * (GravityDownAcceleration * Time.deltaTime);
 
             // hit detection
             {
-                var closestHit = new RaycastHit();
-                closestHit.distance = Mathf.Infinity;
+                var closestHit = new RaycastHit
+                {
+                    distance = Mathf.Infinity
+                };
                 var foundHit = false;
 
                 // sphere cast
                 var displacementSinceLastFrame = Tip.position - m_LastRootPosition;
-                var hits = Physics.SphereCastAll(m_LastRootPosition, Radius,
-                    displacementSinceLastFrame.normalized, displacementSinceLastFrame.magnitude, HittableLayers,
-                    k_TriggerInteraction);
-                foreach (var hit in hits)
-                    if (IsHitValid(hit) && hit.distance < closestHit.distance)
+                var size = Physics.SphereCastNonAlloc(m_LastRootPosition, Radius, displacementSinceLastFrame.normalized,
+                    hits, displacementSinceLastFrame.magnitude, HittableLayers, k_TriggerInteraction);
+                for (var i = 0; i < size; ++i)
+                    if (IsHitValid(hits[i]) && hits[i].distance < closestHit.distance)
                     {
                         foundHit = true;
-                        closestHit = hit;
+                        closestHit = hits[i];
                     }
 
                 if (foundHit)
@@ -147,11 +152,13 @@ namespace GamePlay
 
         private new void OnShoot()
         {
+            var nowTransform = transform;
+
             m_ShootTime = Time.time;
             m_LastRootPosition = Root.position;
-            m_Velocity = transform.forward * Speed;
+            m_Velocity = nowTransform.forward * Speed;
             m_IgnoreColliders = new List<Collider>();
-            transform.position += m_ProjectileBase.InheritedMuzzleVelocity * Time.deltaTime;
+            nowTransform.position += m_ProjectileBase.InheritedMuzzleVelocity * Time.deltaTime;
 
             // 忽略自身碰撞体
             var ownerColliders = m_ProjectileBase.Owner.GetComponentsInChildren<Collider>();
@@ -185,12 +192,12 @@ namespace GamePlay
             }
         }
 
-        private void OnHit(Vector3 point, Vector3 normal, Collider collider)
+        private void OnHit(Vector3 point, Vector3 normal, Collider hitCollider)
         {
             // damage
             // todo: AreaDamage
 
-            var damageable = collider.GetComponent<Damageable>();
+            var damageable = hitCollider.GetComponent<Damageable>();
             if (damageable) damageable.InflictDamage(Damage, false, m_ProjectileBase.Owner);
 
             // impact vfx

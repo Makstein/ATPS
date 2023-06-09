@@ -9,7 +9,7 @@ namespace Game.Shared
     public enum WeaponShootType
     {
         Manual,
-        Automatic,
+        Automatic = 2,
         Charge
     }
 
@@ -40,7 +40,7 @@ namespace Game.Shared
         [Tooltip("Default data for the crosshair")]
         public CrosshairData CrosshairDataDefault;
 
-        [Tooltip("|Data for the crosshair when targeting an enemy")]
+        [Tooltip("Data for the crosshair when targeting an enemy")]
         public CrosshairData CrosshairDataTargetInSight;
 
         [Header("Internal References")]
@@ -49,6 +49,9 @@ namespace Game.Shared
 
         [Tooltip("Tip of the weapon, where the projectiles are shot")]
         public Transform WeaponMuzzle;
+
+        public Transform LeftHandTarget;
+        public Transform RightHandTarget;
 
         [Header("Shoot Parameters")] [Tooltip("The type of weapon wil affect how it shoots")]
         public WeaponShootType ShootType;

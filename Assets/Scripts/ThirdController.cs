@@ -12,7 +12,7 @@ public class ThirdController : MonoBehaviour
 
     private const float _threshold = 0.01f;
 
-    [Header("Player")] public float MoveSpeed = 2.0f;
+    [Header("Player")] public float MoveSpeed = 5f;
 
     public float SprintSpeed = 7f;
 
@@ -53,11 +53,11 @@ public class ThirdController : MonoBehaviour
     private float _animationBlend;
     private Animator _animator;
     // animation IDs
-    private int _animIDFreeFall;
-    private int _animIDGrounded;
-    private int _animIDJump;
-    private int _animIDMotionSpeed;
-    private int _animIDSpeed;
+    private int _animIDForward;
+    private int _animIDStrafe;
+    private int _animIDIsGrounded;
+    private int _animIDIsJumping;
+    private int _animIDSprint;
 
     //cinemachine
     private float _cinemachineTargetPitch;
@@ -94,19 +94,18 @@ public class ThirdController : MonoBehaviour
     {
         _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-        _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
         _input = GetComponent<ThirdInputs>();
         _playerInput = GetComponent<PlayerInput>();
         _mainCamera.GetComponent<Camera>();
         _playerCubeModel = transform.Find("Cube");
 
-        AssignAnimationIDs();
+        AssignNewAnimationIDs();
         
         // reset time out
         _jumpTimeoutDelta = JumpTimeout;
         _fallTimeoutDelta = FallTimeout;
-        
+
         _hasAnimator = TryGetComponent(out _animator);
     }
 
@@ -119,7 +118,9 @@ public class ThirdController : MonoBehaviour
         JumpAndGravity();
         GroundCheck();
         Move();
-        DetectItem();
+        
+        //--- 暂时关闭简单的物品检测 ---
+        //DetectItem();
     }
 
     private void LateUpdate()
@@ -141,14 +142,14 @@ public class ThirdController : MonoBehaviour
             new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
             GroundedRadius);
     }
-    
-    private void AssignAnimationIDs()
+
+    private void AssignNewAnimationIDs()
     {
-        _animIDSpeed = Animator.StringToHash("Speed");
-        _animIDGrounded = Animator.StringToHash("Grounded");
-        _animIDJump = Animator.StringToHash("Jump");
-        _animIDFreeFall = Animator.StringToHash("FreeFall");
-        _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+        _animIDForward = Animator.StringToHash("Forward");
+        _animIDStrafe = Animator.StringToHash("Strafe");
+        _animIDIsGrounded = Animator.StringToHash("isGrounded");
+        _animIDIsJumping = Animator.StringToHash("isJumping");
+        _animIDSprint = Animator.StringToHash("Sprint");
     }
 
     private void GroundCheck()
@@ -158,7 +159,7 @@ public class ThirdController : MonoBehaviour
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
         
         // update animator if using character
-        if (_hasAnimator) _animator.SetBool(_animIDGrounded, Grounded);
+        if (_hasAnimator) _animator.SetBool(_animIDIsGrounded, Grounded);
     }
 
     private void CameraRotation()
@@ -176,6 +177,7 @@ public class ThirdController : MonoBehaviour
 
         CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
             _cinemachineTargetYaw, 0.0f);
+        // ---角色朝向根据摄像机改变，暂时开启---
         transform.rotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
     }
 
@@ -213,22 +215,25 @@ public class ThirdController : MonoBehaviour
         {
             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                               _mainCamera.transform.eulerAngles.y;
-            // ---在移动时改变角色朝向，暂时停用---
+            
+            // ---在移动时改变角色朝向，暂时禁用---
             // var rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
             //     RotationSmoothTime);
             // transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
         }
 
-        var targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-        _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                         new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        // --- 因为应用了Root Motion，暂时关闭对Controller的操控
+        // var targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+        // _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+        //                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         
         // update animator if using character
         if (_hasAnimator)
         {
-            _animator.SetFloat(_animIDSpeed, _animationBlend);
-            _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+            _animator.SetFloat(_animIDForward, _input.move.y);
+            _animator.SetFloat(_animIDStrafe, _input.move.x);
         }
+        
     }
 
     private void JumpAndGravity()
@@ -239,11 +244,7 @@ public class ThirdController : MonoBehaviour
             _fallTimeoutDelta = FallTimeout;
             
             // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetBool(_animIDJump, false);
-                _animator.SetBool(_animIDFreeFall, false);
-            }
+            if (_hasAnimator) _animator.SetBool(_animIDIsJumping, false);
 
             if (_verticalVelocity < 0.0f) _verticalVelocity = -2f;
 
@@ -252,7 +253,7 @@ public class ThirdController : MonoBehaviour
                 _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                 
                 // update animator if using character
-                if (_hasAnimator) _animator.SetBool(_animIDJump, true);
+                if (_hasAnimator) _animator.SetBool(_animIDIsJumping, true);
             }
 
             if (_jumpTimeoutDelta >= 0.0f) _jumpTimeoutDelta -= Time.deltaTime;
@@ -269,7 +270,7 @@ public class ThirdController : MonoBehaviour
             else
             {
                 // update animator if using character
-                if (_hasAnimator) _animator.SetBool(_animIDFreeFall, true);
+                // todo: 播放下落动画
             }
 
             _input.jump = false;

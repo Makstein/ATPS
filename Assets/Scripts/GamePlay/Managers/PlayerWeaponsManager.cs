@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cinemachine;
 using Game;
@@ -76,6 +77,11 @@ namespace GamePlay.Managers
         [Tooltip("Layer to set FPS weapon gameObjects to")]
         public LayerMask FpsWeaponLayer;
 
+        // --- Animatinons
+        private Animator _animator;
+        private int _animIDWeaponType;
+        private int _animAiming;
+        
         private Vector3 m_AccumulatedRecoil;
         private ThirdInputs m_InputHandler;
         private Vector3 m_LastCharacterPosition;
@@ -103,6 +109,8 @@ namespace GamePlay.Managers
             ActiveWeaponIndex = -1;
             m_WeaponSwitchState = WeaponSwitchState.Down;
 
+            _animator = GetComponent<Animator>();
+
             m_InputHandler = GetComponent<ThirdInputs>();
             DebugUtility.HandleErrorIfNullGetComponent<ThirdInputs, PlayerWeaponsManager>(m_InputHandler, this,
                 gameObject);
@@ -112,6 +120,9 @@ namespace GamePlay.Managers
                 m_PlayerCharacterController, this, gameObject);
 
             // todo: is FOV should be set here?
+            
+            // --- 通过Animator.StringToHash将动画参数转为INT，提高比较效率 ---
+            AssignAnimationIDs();
 
             OnSwitchedToWeapon += OnWeaponSwitched;
 
@@ -142,6 +153,11 @@ namespace GamePlay.Managers
                 // Handle aiming down sights
                 IsAiming = m_InputHandler.aiming;
                 m_InputHandler.aiming = false;
+
+                if (m_InputHandler.tapFire || m_InputHandler.holdFire)
+                {
+                    _animator.SetBool(_animAiming, true);
+                }
 
                 // todo: handle shooting, charge weapon unfinished
                 var hasFired = activeWeapon.HandleShootInputs(
@@ -202,12 +218,46 @@ namespace GamePlay.Managers
         {
             UpdateWeaponAiming();
             UpdateWeaponBob();
-            UpdateWeaponRecoil();
+            //UpdateWeaponRecoil();
             UpdateWeaponSwitching();
 
             // Set final weapon socket position based on  all the animation influences
             WeaponParentSocket.localPosition =
                 m_WeaponMainLocalPosition + m_WeaponBobLocalPosition + m_WeaponRecoilLocalPosition;
+        }
+
+        // --- 由于尝试使用Animation Rigging，暂时停用OnAnimatorIK ---
+        // private void OnAnimatorIK(int layerIndex)
+        // {
+        //     if (_animator)
+        //     {
+        //         _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
+        //         _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
+        //         _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+        //         _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
+        //
+        //         var activeWeapon = GetActiveWeapon();
+        //         if (activeWeapon != null)
+        //         {
+        //             if (activeWeapon.LeftHandTarget != null)
+        //             {
+        //                 _animator.SetIKPosition(AvatarIKGoal.LeftHand, activeWeapon.LeftHandTarget.position);
+        //                 _animator.SetIKRotation(AvatarIKGoal.LeftHand, activeWeapon.LeftHandTarget.rotation);
+        //             }
+        //
+        //             if (activeWeapon.RightHandTarget != null)
+        //             {
+        //                 _animator.SetIKPosition(AvatarIKGoal.RightHand, activeWeapon.RightHandTarget.position);
+        //                 _animator.SetIKRotation(AvatarIKGoal.RightHand, activeWeapon.RightHandTarget.rotation);
+        //             }
+        //         }
+        //     }
+        // }
+
+        private void AssignAnimationIDs()
+        {
+            _animIDWeaponType = Animator.StringToHash("WeaponType");
+            _animAiming = Animator.StringToHash("aiming");
         }
 
         private void UpdateWeaponSwitching()
@@ -291,7 +341,6 @@ namespace GamePlay.Managers
             // calculate a smoothed weapon bob based on current speed
             var characterMovementFactor = 0f;
             if (m_PlayerCharacterController.Grounded)
-                // todo: see the performance and change code below depends on it
                 characterMovementFactor =
                     Mathf.Clamp01(playerCharacterVelocity.magnitude /
                                   (m_PlayerCharacterController.MoveSpeed *
@@ -422,7 +471,7 @@ namespace GamePlay.Managers
                 // Set owner to this gameObject so the weapon can alter projectile/damage accordingly
                 weaponInstance.Owner = gameObject;
                 weaponInstance.SourcePrefab = weaponPrefab.gameObject;
-                weaponInstance.ShowWeapon(true);
+                weaponInstance.ShowWeapon(false);
 
                 // Assign the first person layer to the weapon
                 var layerIndex = Mathf.RoundToInt(Mathf.Log(FpsWeaponLayer.value, 2)); // convert a layer mask to index
@@ -452,7 +501,13 @@ namespace GamePlay.Managers
 
         private void OnWeaponSwitched(WeaponController newWeapon)
         {
-            if (newWeapon != null) newWeapon.ShowWeapon(true);
+            if (newWeapon == null) return;
+            
+            newWeapon.ShowWeapon(true);
+            if (newWeapon.ShootType == WeaponShootType.Automatic)
+            {
+                _animator.SetInteger(_animIDWeaponType, 2);
+            }
         }
     }
 }
