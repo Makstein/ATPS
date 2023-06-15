@@ -1,3 +1,4 @@
+using System;
 using InputSystem;
 using Unity.Collections;
 using Unity.Jobs;
@@ -49,6 +50,9 @@ public class ThirdController : MonoBehaviour
     [Header("UI")] public GameObject EKeyUI;
 
     public float PickUpDistance = 3;
+
+    [Header("Animation")] public Transform LeftHandIKTarget;
+    public Transform RightHandIKTarget;
     
     private float _animationBlend;
     private Animator _animator;
@@ -128,6 +132,30 @@ public class ThirdController : MonoBehaviour
         if (GameManager.gameState != GameState.Run) return;
 
         CameraRotation();
+    }
+
+    // Highly recommend NOT use Animation Rigging replaces OnAnimatorIK(), it's complex, and has bugs
+    private void OnAnimatorIK(int layerIndex)
+    {
+        if (_animator)
+        {
+            _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
+            _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
+            _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+            _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
+        }
+
+        if (LeftHandIKTarget != null)
+        {
+            _animator.SetIKPosition(AvatarIKGoal.LeftHand, LeftHandIKTarget.position);
+            _animator.SetIKRotation(AvatarIKGoal.LeftHand, LeftHandIKTarget.rotation);
+        }
+
+        if (RightHandIKTarget != null)
+        {
+            _animator.SetIKPosition(AvatarIKGoal.RightHand, RightHandIKTarget.position);
+            _animator.SetIKRotation(AvatarIKGoal.RightHand, RightHandIKTarget.rotation);
+        }
     }
 
     private void OnDrawGizmosSelected()
@@ -230,8 +258,16 @@ public class ThirdController : MonoBehaviour
         // update animator if using character
         if (_hasAnimator)
         {
-            _animator.SetFloat(_animIDForward, _input.move.y);
-            _animator.SetFloat(_animIDStrafe, _input.move.x);
+            if (!_input.sprint)
+            {
+                _animator.SetFloat(_animIDForward, _input.move.y * 0.5f);
+                _animator.SetFloat(_animIDStrafe, _input.move.x * 0.5f);
+            }
+            else
+            {
+                _animator.SetFloat(_animIDForward, _input.move.y);
+                _animator.SetFloat(_animIDStrafe, _input.move.x);
+            }
         }
         
     }

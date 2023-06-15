@@ -7,6 +7,7 @@ namespace Game
     {
         public static EnemyKillEvent EnemyKillEvent = new();
         public static AllObjectivesCompletedEvent AllObjectivesCompletedEvent = new();
+        public static PickUpEvent PickUpEvent = new();
         public static PlayerDeathEvent PlayerDeathEvent = new();
         public static DisplayMessageEvent DisplayMessageEvent = new();
     }
@@ -23,6 +24,11 @@ namespace Game
     {
         public GameObject Enemy;
         public int RemainingEnemyCount;
+    }
+
+    public class PickUpEvent : GameEvent
+    {
+        public GameObject Pickup;
     }
 
     public class DisplayMessageEvent : GameEvent

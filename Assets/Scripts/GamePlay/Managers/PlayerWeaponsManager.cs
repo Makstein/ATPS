@@ -81,7 +81,7 @@ namespace GamePlay.Managers
         private Animator _animator;
         private int _animIDWeaponType;
         private int _animAiming;
-        
+
         private Vector3 m_AccumulatedRecoil;
         private ThirdInputs m_InputHandler;
         private Vector3 m_LastCharacterPosition;
@@ -90,6 +90,7 @@ namespace GamePlay.Managers
         private float m_WeaponBobFactor; // 武器摆动因数
         private Vector3 m_WeaponBobLocalPosition;
         private Vector3 m_WeaponMainLocalPosition;
+        private Quaternion m_WeaponMainLocalRotation;
         private Vector3 m_WeaponRecoilLocalPosition;
 
         private readonly WeaponController[] m_WeaponSlots = new WeaponController[9];
@@ -120,7 +121,7 @@ namespace GamePlay.Managers
                 m_PlayerCharacterController, this, gameObject);
 
             // todo: is FOV should be set here?
-            
+
             // --- 通过Animator.StringToHash将动画参数转为INT，提高比较效率 ---
             AssignAnimationIDs();
 
@@ -205,6 +206,19 @@ namespace GamePlay.Managers
                 }
             }
 
+            switch (m_WeaponSwitchState)
+            {
+                // 冲刺时放下武器/Put down weapon when sprint
+                case WeaponSwitchState.Up when m_InputHandler.sprint:
+                    m_WeaponSwitchState = WeaponSwitchState.PutDownPrevious;
+                    m_TimeStartedWeaponSwitch = Time.time;
+                    break;
+                case WeaponSwitchState.Down when !m_InputHandler.sprint:
+                    m_WeaponSwitchState = WeaponSwitchState.PutUpNew;
+                    m_TimeStartedWeaponSwitch = Time.time;
+                    break;
+            }
+
             // Pointing at enemy handling
             IsPointingAtEnemy = false;
             if (!activeWeapon) return;
@@ -222,37 +236,10 @@ namespace GamePlay.Managers
             UpdateWeaponSwitching();
 
             // Set final weapon socket position based on  all the animation influences
-            WeaponParentSocket.localPosition =
-                m_WeaponMainLocalPosition + m_WeaponBobLocalPosition + m_WeaponRecoilLocalPosition;
+            WeaponParentSocket.SetLocalPositionAndRotation(
+                m_WeaponMainLocalPosition + m_WeaponBobLocalPosition + m_WeaponRecoilLocalPosition,
+                m_WeaponMainLocalRotation);
         }
-
-        // --- 由于尝试使用Animation Rigging，暂时停用OnAnimatorIK ---
-        // private void OnAnimatorIK(int layerIndex)
-        // {
-        //     if (_animator)
-        //     {
-        //         _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-        //         _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
-        //         _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-        //         _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
-        //
-        //         var activeWeapon = GetActiveWeapon();
-        //         if (activeWeapon != null)
-        //         {
-        //             if (activeWeapon.LeftHandTarget != null)
-        //             {
-        //                 _animator.SetIKPosition(AvatarIKGoal.LeftHand, activeWeapon.LeftHandTarget.position);
-        //                 _animator.SetIKRotation(AvatarIKGoal.LeftHand, activeWeapon.LeftHandTarget.rotation);
-        //             }
-        //
-        //             if (activeWeapon.RightHandTarget != null)
-        //             {
-        //                 _animator.SetIKPosition(AvatarIKGoal.RightHand, activeWeapon.RightHandTarget.position);
-        //                 _animator.SetIKRotation(AvatarIKGoal.RightHand, activeWeapon.RightHandTarget.rotation);
-        //             }
-        //         }
-        //     }
-        // }
 
         private void AssignAnimationIDs()
         {
@@ -279,7 +266,7 @@ namespace GamePlay.Managers
                             // Deactivate old weapon
                             var oldWeapon = GetWeaponAtSlotIndex(ActiveWeaponIndex);
                             if (oldWeapon != null) oldWeapon.ShowWeapon(false);
-                            
+
                             ActiveWeaponIndex = m_WeaponSwitchNewWeaponIndex;
                             switchingTimeFactor = 0f;
 
@@ -308,9 +295,22 @@ namespace GamePlay.Managers
             {
                 WeaponSwitchState.PutDownPrevious => Vector3.Lerp(DefaultWeaponPosition.localPosition,
                     DownWeaponPosition.localPosition, switchingTimeFactor),
+                // ReSharper disable once Unity.InefficientPropertyAccess : only access once
                 WeaponSwitchState.PutUpNew => Vector3.Lerp(DownWeaponPosition.localPosition,
+                    // ReSharper disable once Unity.InefficientPropertyAccess
                     DefaultWeaponPosition.localPosition, switchingTimeFactor),
                 _ => m_WeaponMainLocalPosition
+            };
+
+            m_WeaponMainLocalRotation = m_WeaponSwitchState switch
+            {
+                WeaponSwitchState.PutDownPrevious => Quaternion.Lerp(DefaultWeaponPosition.localRotation,
+                    DownWeaponPosition.localRotation, switchingTimeFactor),
+                // ReSharper disable once Unity.InefficientPropertyAccess
+                WeaponSwitchState.PutUpNew => Quaternion.Lerp(DownWeaponPosition.localRotation,
+                    // ReSharper disable once Unity.InefficientPropertyAccess
+                    DefaultWeaponPosition.localRotation, switchingTimeFactor),
+                _ => m_WeaponMainLocalRotation
             };
         }
 
@@ -502,7 +502,7 @@ namespace GamePlay.Managers
         private void OnWeaponSwitched(WeaponController newWeapon)
         {
             if (newWeapon == null) return;
-            
+
             newWeapon.ShowWeapon(true);
             if (newWeapon.ShootType == WeaponShootType.Automatic)
             {
