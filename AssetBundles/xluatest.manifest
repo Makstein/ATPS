@@ -1,0 +1,37 @@
+ManifestFileVersion: 0
+CRC: 2436264445
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: bb92c4219199c129d99aa98436c5983b
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 19ad5270e9be67a2f1b319438e9d1227
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 49
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 135
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Prefabs/xLuaTest/xCube.prefab
+- Assets/Scripts/xLua/luaScript.lua.txt
+- Assets/Prefabs/xLuaTest/xSphere.prefab
+Dependencies: []

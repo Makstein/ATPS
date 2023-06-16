@@ -1,0 +1,15 @@
+print("Version 1.5")
+
+xlua.private_accessible(CS.UI.xLuaTest.xLuaScript)
+
+local unity = CS.UnityEngine
+
+xlua.hotfix(CS.UI.xLuaTest.xLuaScript, "OnGenObjBtnClick",
+    function(_)
+        local go = unity.GameObject.Find("xLuaTest")
+        local ab = go:GetComponent("xLuaHotLoad").AB
+        local xSphereGo = ab:LoadAsset("xSphere")
+        
+        local sphere = unity.GameObject.Instantiate(xSphereGo)
+        sphere.transform.position = unity.Vector3(0, 5, 5)
+    end)

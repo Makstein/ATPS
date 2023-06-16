@@ -6,13 +6,20 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 
 非常简陋，尚未完善，本身使用Plastic作为版本控制，GitHub仅作备份及公开展示，可能不会非常频繁更新
 
+## 关于 xLua 和热更新
+
+点击“Generate Gameobject”按钮会在场景中生成正方体，在点击“HotReload"后再次点击会生成球形物体，想要使用功能请保证有本地或远程服务器，且服务器中有对应的热更AB包，并在xLuaHotLoad.cs中更改对应的服务器资源地址
+
+
+
 ------
 
 目前的开发计划：
 
 - [x] 解决子弹系统异常延迟bug
 - [x] 完善玩家模型动画
-- [ ] 使用Lua重写或添加部分逻辑
+- [x] 使用Lua重写或添加部分逻辑
+- [ ] 修复射击时子弹生成位置问题
 - [ ] 添加敌人攻击
 - [ ] 添加拾取血包
 - [ ] 添加锁定系统
@@ -23,13 +30,18 @@ Personal practice unity project, a third person action shoot game, based on unit
 
 Very WIP, and I use plastic for version control, GitHub just for demonstrating, so may not update frequently.
 
+## About xlua and hotfix
+
+Hit "Generate Gameobject" button will generate a cube in scene, if you hit "HotReload" button and then hit "Generate Gameobject" button again, it will generate a sphere in scene. if you want to test it, you must have a local or remote hosting having the hotfix assetbundle, and change the resource path in xLuaHotLoad.cs according to its url.
+
 ------
 
 Todo List:
 
 - [x] Fix the werid delay when shooting
 - [x] Improve player model animation
-- [ ] Add some lua for practice
+- [x] Add some lua for practice
+- [ ] Fix the projectile position bug when shooting
 - [ ] Add enemy attack
 - [ ] Add pickup Health
 - [ ] Add lock on system
