@@ -158,7 +158,10 @@ namespace GamePlay
             m_LastRootPosition = Root.position;
             m_Velocity = nowTransform.forward * Speed;
             m_IgnoreColliders = new List<Collider>();
-            nowTransform.position += m_ProjectileBase.InheritedMuzzleVelocity * Time.deltaTime;
+            if (InheritWeaponVelocity)
+            {
+                nowTransform.position += m_ProjectileBase.InheritedMuzzleVelocity * Time.deltaTime;
+            }
 
             // 忽略自身碰撞体
             var ownerColliders = m_ProjectileBase.Owner.GetComponentsInChildren<Collider>();

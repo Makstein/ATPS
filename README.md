@@ -10,8 +10,6 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 
 点击“Generate Gameobject”按钮会在场景中生成正方体，在点击“HotReload"后再次点击会生成球形物体，想要使用功能请保证有本地或远程服务器，且服务器中有对应的热更AB包，并在xLuaHotLoad.cs中更改对应的服务器资源地址
 
-
-
 ------
 
 目前的开发计划：
@@ -19,6 +17,7 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 - [x] 解决子弹系统异常延迟bug
 - [x] 完善玩家模型动画
 - [x] 使用Lua重写或添加部分逻辑
+- [ ] 完善枪械瞄准动画
 - [ ] 修复射击时子弹生成位置问题
 - [ ] 添加敌人攻击
 - [ ] 添加拾取血包
@@ -41,6 +40,7 @@ Todo List:
 - [x] Fix the werid delay when shooting
 - [x] Improve player model animation
 - [x] Add some lua for practice
+- [ ] Improve weapon aimming animation
 - [ ] Fix the projectile position bug when shooting
 - [ ] Add enemy attack
 - [ ] Add pickup Health

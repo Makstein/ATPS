@@ -401,7 +401,7 @@ namespace Game.Shared
                 var shotDirection = GetShotDirectionWithinSpread(WeaponMuzzle);
                 var newProjectile = Instantiate(ProjectilePrefab, WeaponMuzzle.position,
                     Quaternion.LookRotation(shotDirection));
-
+                
                 newProjectile.Shoot(this);
             }
 
