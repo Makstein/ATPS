@@ -38,7 +38,7 @@ namespace GamePlay
         public LayerMask HittableLayers = -1;
 
         [Header("Movement")] [Tooltip("Speed of the projectile")]
-        public float Speed = 20f;
+        public float Speed = 40f;
 
         [Tooltip("Downward acceleration from gravity")]
         public float GravityDownAcceleration;
@@ -74,7 +74,6 @@ namespace GamePlay
         {
             // Move
             transform.position += m_Velocity * Time.deltaTime;
-            if (InheritWeaponVelocity) transform.position += m_ProjectileBase.InheritedMuzzleVelocity * Time.deltaTime;
 
             // Drift towards trajectory override (this is so that projectile can be centered
             // with the camera center even though the actual weapon is offset )
@@ -156,7 +155,7 @@ namespace GamePlay
 
             m_ShootTime = Time.time;
             m_LastRootPosition = Root.position;
-            m_Velocity = nowTransform.forward * Speed;
+            m_Velocity = nowTransform.forward.normalized * Speed;
             m_IgnoreColliders = new List<Collider>();
             if (InheritWeaponVelocity)
             {
@@ -171,27 +170,34 @@ namespace GamePlay
             var playerWeaponsManager = m_ProjectileBase.Owner.GetComponent<PlayerWeaponsManager>();
             if (playerWeaponsManager)
             {
-                m_HasTrajectoryOverride = true;
+                // m_HasTrajectoryOverride = true;
+                //
+                // var cameraToMuzzle = m_ProjectileBase.InitialPosition -
+                //                      playerWeaponsManager.WeaponCamera.transform.position;
+                //
+                // m_TrajectoryCorrectionVector = Vector3.ProjectOnPlane(-cameraToMuzzle,
+                //     playerWeaponsManager.WeaponCamera.transform.forward);
+                // if (TrajectoryCorrectionDistance == 0)
+                // {
+                //     transform.position += m_TrajectoryCorrectionVector;
+                //     m_ConsumeTrajectoryCorrectionVector = m_TrajectoryCorrectionVector;
+                // }
+                // else if (TrajectoryCorrectionDistance < 0f)
+                // {
+                //     m_HasTrajectoryOverride = false;
+                // }
 
-                var cameraToMuzzle = m_ProjectileBase.InitialPosition -
-                                     playerWeaponsManager.WeaponCamera.transform.position;
-
-                m_TrajectoryCorrectionVector = Vector3.ProjectOnPlane(-cameraToMuzzle,
-                    playerWeaponsManager.WeaponCamera.transform.forward);
-                if (TrajectoryCorrectionDistance == 0)
-                {
-                    transform.position += m_TrajectoryCorrectionVector;
-                    m_ConsumeTrajectoryCorrectionVector = m_TrajectoryCorrectionVector;
-                }
-                else if (TrajectoryCorrectionDistance < 0f)
-                {
-                    m_HasTrajectoryOverride = false;
-                }
-
-                if (Physics.Raycast(playerWeaponsManager.WeaponCamera.transform.position, cameraToMuzzle.normalized,
-                        out var hit, cameraToMuzzle.magnitude, HittableLayers, k_TriggerInteraction))
+                if (Physics.Raycast(playerWeaponsManager.WeaponCamera.transform.position, 
+                        playerWeaponsManager.WeaponCamera.transform.forward.normalized,
+                        out var hit, 100f, HittableLayers, k_TriggerInteraction))
                     if (IsHitValid(hit))
-                        OnHit(hit.point, hit.normal, hit.collider);
+                    {
+                        // m_HasTrajectoryOverride = true;
+                        //
+                        // var muzzleToHitPoint = hit.point - playerWeaponsManager.WeaponParentSocket.position;
+                        // m_TrajectoryCorrectionVector = Vector3.ProjectOnPlane(muzzleToHitPoint,
+                        //     playerWeaponsManager.WeaponCamera.transform.forward);
+                    }
             }
         }
 

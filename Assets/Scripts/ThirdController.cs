@@ -1,4 +1,5 @@
 using System;
+using Cinemachine;
 using InputSystem;
 using Unity.Collections;
 using Unity.Jobs;
@@ -74,8 +75,9 @@ public class ThirdController : MonoBehaviour
 
     //timeout deltatime
     private float _jumpTimeoutDelta;
-    private GameObject _mainCamera;
+    private Camera _mainCamera;
     private Transform _playerCubeModel;
+    private Transform _aimTarget;
 
     private PlayerInput _playerInput;
     private float _rotationVelocity;
@@ -91,7 +93,7 @@ public class ThirdController : MonoBehaviour
 
     private void Awake()
     {
-        if (_mainCamera == null) _mainCamera = GameObject.FindWithTag("MainCamera");
+        
     }
 
     private void Start()
@@ -101,7 +103,7 @@ public class ThirdController : MonoBehaviour
         _controller = GetComponent<CharacterController>();
         _input = GetComponent<ThirdInputs>();
         _playerInput = GetComponent<PlayerInput>();
-        _mainCamera.GetComponent<Camera>();
+        if (_mainCamera == null) _mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         _playerCubeModel = transform.Find("Cube");
 
         AssignNewAnimationIDs();
@@ -111,6 +113,8 @@ public class ThirdController : MonoBehaviour
         _fallTimeoutDelta = FallTimeout;
 
         _hasAnimator = TryGetComponent(out _animator);
+
+        _aimTarget = GameObject.Find("AimTarget").transform;
     }
 
     private void Update()
@@ -132,6 +136,8 @@ public class ThirdController : MonoBehaviour
         if (GameManager.gameState != GameState.Run) return;
 
         CameraRotation();
+
+        _aimTarget.position = _mainCamera.ScreenToWorldPoint(new Vector3(Screen.width / 2.0f, Screen.height / 2.0f, 20f));
     }
 
     // Highly recommend NOT use Animation Rigging replaces OnAnimatorIK(), it's complex, and has bugs

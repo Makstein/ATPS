@@ -103,7 +103,7 @@ namespace Game.Shared
         public float AmmoReloadDelay = 2f;
 
         [Tooltip("Maximum amount fo ammo in the gun")]
-        public int MaxAmmo = 8;
+        public int MaxAmmo = 14;
 
         [Header("Charging parameters")] [Tooltip("Trigger a shot when maximum charge is reached")]
         public bool AutomaticReleaseOnCharged;

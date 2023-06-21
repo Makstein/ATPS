@@ -81,6 +81,7 @@ namespace GamePlay.Managers
         private Animator _animator;
         private int _animIDWeaponType;
         private int _animAiming;
+        private Transform _ainTarget;
 
         private Vector3 m_AccumulatedRecoil;
         private ThirdInputs m_InputHandler;
@@ -119,6 +120,8 @@ namespace GamePlay.Managers
             m_PlayerCharacterController = GetComponent<ThirdController>();
             DebugUtility.HandleErrorIfNullGetComponent<ThirdController, PlayerWeaponsManager>(
                 m_PlayerCharacterController, this, gameObject);
+
+            _ainTarget = GameObject.Find("AimTarget").transform;
 
             // todo: is FOV should be set here?
 
@@ -236,9 +239,9 @@ namespace GamePlay.Managers
             UpdateWeaponSwitching();
 
             // Set final weapon socket position based on  all the animation influences
-            WeaponParentSocket.SetLocalPositionAndRotation(
-                m_WeaponMainLocalPosition + m_WeaponBobLocalPosition + m_WeaponRecoilLocalPosition,
-                m_WeaponMainLocalRotation);
+            WeaponParentSocket.localPosition =
+                m_WeaponMainLocalPosition + m_WeaponBobLocalPosition + m_WeaponRecoilLocalPosition;
+            WeaponParentSocket.LookAt(_ainTarget);
         }
 
         private void AssignAnimationIDs()
@@ -465,7 +468,7 @@ namespace GamePlay.Managers
                 // spawn the weapon prefab as child of the weapon socket
                 var weaponInstance = Instantiate(weaponPrefab, WeaponParentSocket);
                 var weaponInstanceTransform = weaponInstance.transform;
-                weaponInstanceTransform.localPosition = Vector3.zero;
+                weaponInstanceTransform.localPosition = new Vector3(0, 0, 0.4f);
                 weaponInstanceTransform.localRotation = Quaternion.identity;
 
                 // Set owner to this gameObject so the weapon can alter projectile/damage accordingly

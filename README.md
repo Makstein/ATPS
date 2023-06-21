@@ -17,8 +17,8 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 - [x] 解决子弹系统异常延迟bug
 - [x] 完善玩家模型动画
 - [x] 使用Lua重写或添加部分逻辑
-- [ ] 完善枪械瞄准动画
-- [ ] 修复射击时子弹生成位置问题
+- [x] 完善枪械上下瞄准
+- [x] 修复射击时子弹生成位置问题
 - [ ] 添加敌人攻击
 - [ ] 添加拾取血包
 - [ ] 添加锁定系统
@@ -40,8 +40,8 @@ Todo List:
 - [x] Fix the werid delay when shooting
 - [x] Improve player model animation
 - [x] Add some lua for practice
-- [ ] Improve weapon aimming animation
-- [ ] Fix the projectile position bug when shooting
+- [x] Improve weapon vertical control
+- [x] Fix the projectile position bug when shooting
 - [ ] Add enemy attack
 - [ ] Add pickup Health
 - [ ] Add lock on system
