@@ -58,42 +58,50 @@ namespace AI
             IsSeeingTarget = false;
             var closestSqrDistance = Mathf.Infinity;
             foreach (var otherActor in m_ActorsManager.Actors)
-                if (otherActor.Affiliation != actor.Affiliation)
+            {
+                // 略过对同阵营的监测 Ignore actors in same affiliation
+                if (otherActor.Affiliation == actor.Affiliation) continue;
+                
+                var sqrDistance = (otherActor.transform.position - DetectionSourcePoint.transform.position)
+                    .sqrMagnitude;
+                
+                // 只有当目标距自身距离小于检测距离，并且小于当前最近的目标距离时，才进行进一步检测
+                if (!(sqrDistance < sqrDetectionRange) || !(sqrDistance < closestSqrDistance)) continue;
+                
+                var results = new NativeArray<RaycastHit>(1, Allocator.TempJob);
+                var commands = new NativeArray<RaycastCommand>(1, Allocator.TempJob);
+                var closestValidHit = new RaycastHit { distance = Mathf.Infinity };
+                var position = DetectionSourcePoint.position;
+                commands[0] = new RaycastCommand(position,
+                    (otherActor.AimPoint.position - position).normalized,
+                    new QueryParameters(-1), DetectionRange);
+                var handle = RaycastCommand.ScheduleBatch(commands, results, 1, 1);
+                handle.Complete();
+                
+                var foundValidHit = false;
+                if (results[0].collider != null)
                 {
-                    var sqrDistance = (otherActor.transform.position - DetectionSourcePoint.transform.position)
-                        .sqrMagnitude;
-                    if (sqrDistance < sqrDetectionRange && sqrDistance < closestSqrDistance)
+                    if (!selfColliders.Contains(results[0].collider) &&
+                        results[0].distance < closestValidHit.distance)
                     {
-                        var results = new NativeArray<RaycastHit>(1, Allocator.TempJob);
-                        var commands = new NativeArray<RaycastCommand>(1, Allocator.TempJob);
-                        var closestValidHit = new RaycastHit { distance = Mathf.Infinity };
-                        var position = DetectionSourcePoint.position;
-                        commands[0] = new RaycastCommand(position,
-                            (otherActor.AimPoint.position - position).normalized,
-                            new QueryParameters(-1), DetectionRange);
-                        var handle = RaycastCommand.ScheduleBatch(commands, results, 1, 1);
-                        handle.Complete();
-                        var foundValidHit = false;
-                        if (results[0].collider != null)
-                            if (!selfColliders.Contains(results[0].collider) &&
-                                results[0].distance < closestValidHit.distance)
-                            {
-                                closestValidHit = results[0];
-                                foundValidHit = true;
-                            }
-
-                        if (foundValidHit)
-                        {
-                            var hitActor = closestValidHit.collider.GetComponentInParent<Actor>();
-                            if (hitActor != otherActor) return;
-
-                            IsSeeingTarget = true;
-                            closestSqrDistance = sqrDistance;
-                            TimeLastSeenTarget = Time.time;
-                            KnownDetectedTarget = otherActor.AimPoint.gameObject;
-                        }
+                        closestValidHit = results[0];
+                        foundValidHit = true;
                     }
                 }
+
+                if (!foundValidHit) continue;
+                
+                var hitActor = closestValidHit.collider.GetComponentInParent<Actor>();
+                if (hitActor != otherActor) return;
+
+                IsSeeingTarget = true;
+                closestSqrDistance = sqrDistance;
+                TimeLastSeenTarget = Time.time;
+                KnownDetectedTarget = otherActor.AimPoint.gameObject;
+
+                commands.Dispose();
+                results.Dispose();
+            }
 
             IsTargetInAttackRange = KnownDetectedTarget != null &&
                                     Vector3.Distance(transform.position, KnownDetectedTarget.transform.position) <=

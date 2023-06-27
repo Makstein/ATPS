@@ -88,9 +88,11 @@ namespace AI
         private GameFlowManager m_GameFLowManager;
         private Health m_Health;
         private float m_LastTimeDamaged = float.NegativeInfinity;
-        private readonly float m_LastTimeWeaponSwapped = Mathf.NegativeInfinity;
+        private float m_LastTimeWeaponSwapped = Mathf.NegativeInfinity;
 
         // todo: weapon manage
+        private WeaponController m_CurrentWeapon;
+        private WeaponController[] m_Weapons;
 
         private NavigationModule m_NavigationModule;
 
@@ -136,7 +138,9 @@ namespace AI
             m_Health.OnDie += OnDie;
             m_Health.OnDamaged += OnDamaged;
 
-            // todo: Weapon initialize
+            FindAndInitializeAllWeapon();
+            var weapon = GetCurrentWeapon();
+            weapon.ShowWeapon(true);
 
             var detectionModules = GetComponentsInChildren<DetectionModule>();
             DebugUtility.HandleErrorIfNoComponentFound<DetectionModule, EnemyController>(detectionModules.Length, this,
@@ -193,6 +197,39 @@ namespace AI
             m_WasDamagedThisFrame = false;
         }
 
+        private void FindAndInitializeAllWeapon()
+        {
+            if (m_Weapons == null)
+            {
+                m_Weapons = GetComponentsInChildren<WeaponController>();
+
+                foreach (var weapon in m_Weapons)
+                {
+                    weapon.Owner = gameObject;
+                }
+            }
+        }
+
+        public WeaponController GetCurrentWeapon()
+        {
+            FindAndInitializeAllWeapon();
+            // check if no weapon is currently selected
+            if (m_CurrentWeapon == null)
+            {
+                SetCurrentWeapon(0);
+            }
+
+            return m_CurrentWeapon;
+        }
+
+        private void SetCurrentWeapon(int index)
+        {
+            m_CurrentWeaponIndex = index;
+            m_CurrentWeapon = m_Weapons[m_CurrentWeaponIndex];
+            
+            m_LastTimeWeaponSwapped = SwapToNextWeapon ? Time.time : Mathf.NegativeInfinity;
+        }
+
         private void EnsureWithinLevelBounds()
         {
             if (transform.position.y >= SelfDestructYHeight) return;
@@ -214,7 +251,7 @@ namespace AI
         private void OnDetectedTarget()
         {
             onDetectedTarget?.Invoke();
-
+            
             if (m_EyeRendererData.Renderer == null) return;
 
             m_EyeColorPropertyBlock.SetColor("_EmissionColor", AttackEyeColor);
@@ -284,13 +321,32 @@ namespace AI
         {
             if (m_GameFLowManager.GameIsEnding) return false;
 
-            // todo: Rotate weapon
+            OrientWeaponsTowards(enemyPosition);
 
             if (m_LastTimeWeaponSwapped + DelayAfterWeaponSwap >= Time.time) return false;
 
-            // todo: Shoot the weapon
+            // Shoot the weapon
+            var didFire = GetCurrentWeapon().HandleShootInputs(false, true, false);
+            if (didFire && onAttack != null)
+            {
+                onAttack.Invoke();
+                if (SwapToNextWeapon && m_Weapons.Length > 1)
+                {
+                    var nextWeaponIndex = (m_CurrentWeaponIndex + 1) & m_Weapons.Length;
+                    SetCurrentWeapon(nextWeaponIndex);
+                }
+            }
 
-            return true;
+            return didFire;
+        }
+
+        public void OrientWeaponsTowards(Vector3 lookPosition)
+        {
+            foreach (var weapon in m_Weapons)
+            {
+                var weaponForward = (lookPosition - weapon.WeaponRoot.transform.position).normalized;
+                weapon.transform.forward = weaponForward;
+            }
         }
 
         private bool TryDropItem()

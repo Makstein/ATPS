@@ -70,6 +70,7 @@ namespace AI
                 case AIState.Follow:
                     if (m_EnemyController.IsSeeingTarget && m_EnemyController.IsTargetInAttackRange)
                     {
+                        Debug.Log("In attack range");
                         AiState = AIState.Attack;
                         m_EnemyController.SetNavDestination(transform.position);
                     }

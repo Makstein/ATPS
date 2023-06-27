@@ -19,7 +19,7 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 - [x] 使用Lua重写或添加部分逻辑
 - [x] 完善枪械上下瞄准
 - [x] 修复射击时子弹生成位置问题
-- [ ] 添加敌人攻击
+- [x] 添加敌人攻击
 - [ ] 添加拾取血包
 - [ ] 添加锁定系统
 
@@ -42,6 +42,6 @@ Todo List:
 - [x] Add some lua for practice
 - [x] Improve weapon vertical control
 - [x] Fix the projectile position bug when shooting
-- [ ] Add enemy attack
+- [x] Add enemy attack
 - [ ] Add pickup Health
 - [ ] Add lock on system

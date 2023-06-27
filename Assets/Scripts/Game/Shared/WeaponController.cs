@@ -140,7 +140,6 @@ namespace Game.Shared
 
         private int m_CarriedPhysicalBullets;
 
-        private AudioSource m_ContinuousShootAudioSource = null;
         private float m_CurrentAmmo;
         private Vector3 m_LastMuzzlePosition;
         private float m_LastTimeShot = Mathf.NegativeInfinity;

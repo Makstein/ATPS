@@ -14,6 +14,7 @@ namespace Game.Managers
 
         public static void AddListener<T>(Action<T> evt) where T : GameEvent
         {
+            // 防止为事件添加重复响应函数 Avoid to add same callback to an event
             if (s_EventLookUps.ContainsKey(evt)) return;
 
             Action<GameEvent> newAction = e => evt((T)e);
