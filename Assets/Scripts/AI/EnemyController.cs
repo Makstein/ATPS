@@ -378,7 +378,10 @@ namespace AI
 
             if (TryDropItem())
             {
-                // todo: drop loot
+                if (LootPrefab)
+                {
+                    Instantiate(LootPrefab, transform.position, Quaternion.identity);
+                }
             }
 
             Destroy(gameObject, DeathDuration);

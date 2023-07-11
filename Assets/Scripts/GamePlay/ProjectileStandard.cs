@@ -53,8 +53,6 @@ namespace GamePlay
         [Header("Damage")] [Tooltip("Damage of the projectile")]
         public float Damage = 40f;
 
-        // [Tooltip("Area of damage, Keep empty if you don't want area damage")]
-
         [Header("Debug")] [Tooltip("Color of the projectile radius debug view")]
         public Color RadiusColor = Color.cyan * 0.2f;
 
@@ -152,15 +150,16 @@ namespace GamePlay
         private new void OnShoot()
         {
             var nowTransform = transform;
-
-            m_ShootTime = Time.time;
-            m_LastRootPosition = Root.position;
-            m_Velocity = nowTransform.forward.normalized * Speed;
-            m_IgnoreColliders = new List<Collider>();
             if (InheritWeaponVelocity)
             {
                 nowTransform.position += m_ProjectileBase.InheritedMuzzleVelocity * Time.deltaTime;
             }
+            
+            m_ShootTime = Time.time;
+            m_LastRootPosition = Root.position;
+            m_Velocity = nowTransform.forward.normalized * Speed;
+            m_IgnoreColliders = new List<Collider>();
+            
 
             // 忽略自身碰撞体
             var ownerColliders = m_ProjectileBase.Owner.GetComponentsInChildren<Collider>();
@@ -192,11 +191,8 @@ namespace GamePlay
                         out var hit, 100f, HittableLayers, k_TriggerInteraction))
                     if (IsHitValid(hit))
                     {
-                        // m_HasTrajectoryOverride = true;
-                        //
-                        // var muzzleToHitPoint = hit.point - playerWeaponsManager.WeaponParentSocket.position;
-                        // m_TrajectoryCorrectionVector = Vector3.ProjectOnPlane(muzzleToHitPoint,
-                        //     playerWeaponsManager.WeaponCamera.transform.forward);
+                        transform.LookAt(hit.point);
+                        m_Velocity = transform.forward.normalized * Speed;
                     }
             }
         }

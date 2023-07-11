@@ -10,9 +10,7 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 
 点击“Generate Gameobject”按钮会在场景中生成正方体，在点击“HotReload"后再次点击会生成球形物体，想要使用功能请保证有本地或远程服务器，且服务器中有对应的热更AB包，并在xLuaHotLoad.cs中更改对应的服务器资源地址
 
-------
-
-目前的开发计划：
+## 目前的开发计划
 
 - [x] 解决子弹系统异常延迟bug
 - [x] 完善玩家模型动画
@@ -20,8 +18,19 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 - [x] 完善枪械上下瞄准
 - [x] 修复射击时子弹生成位置问题
 - [x] 添加敌人攻击
-- [ ] 添加拾取血包
+- [x] 添加拾取血包
 - [ ] 添加锁定系统
+- [x] 添加子弹碰撞特效
+- [ ] 背包系统
+- [ ] 网络系统
+
+## 已知问题
+
+- 人物在冲刺时持枪动画错误
+- 人物在斜向前进时动画错误
+- 枪械子弹似乎还有一些问题
+
+------
 
 # ATPS
 
@@ -33,9 +42,7 @@ Very WIP, and I use plastic for version control, GitHub just for demonstrating, 
 
 Hit "Generate Gameobject" button will generate a cube in scene, if you hit "HotReload" button and then hit "Generate Gameobject" button again, it will generate a sphere in scene. if you want to test it, you must have a local or remote hosting having the hotfix assetbundle, and change the resource path in xLuaHotLoad.cs according to its url.
 
-------
-
-Todo List:
+## Todo List
 
 - [x] Fix the werid delay when shooting
 - [x] Improve player model animation
@@ -43,5 +50,16 @@ Todo List:
 - [x] Improve weapon vertical control
 - [x] Fix the projectile position bug when shooting
 - [x] Add enemy attack
-- [ ] Add pickup Health
+- [x] Add pickup Health
 - [ ] Add lock on system
+- [x] Add projectile hit VFX
+- [ ] Inventory
+- [ ] Network
+
+## Known Issues
+
+- Animation bug when sprint
+
+- Animation bug when walk/run forward left/right
+
+- Some bug about projectile
