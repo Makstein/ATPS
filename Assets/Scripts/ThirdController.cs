@@ -52,6 +52,8 @@ public class ThirdController : MonoBehaviour
 
     public float PickUpDistance = 3;
 
+    public Canvas InventoryCanvas;
+
     [Header("Animation")] public Transform LeftHandIKTarget;
     public Transform RightHandIKTarget;
     
@@ -90,11 +92,6 @@ public class ThirdController : MonoBehaviour
 
     private bool IsCurrentDeviceMouse => _playerInput.currentControlScheme == "KeyboardMouse";
     private readonly QueryParameters detectedItemQueryParameters = new(1 << 8);
-
-    private void Awake()
-    {
-        
-    }
 
     private void Start()
     {
@@ -360,10 +357,22 @@ public class ThirdController : MonoBehaviour
         // 使用InputSystem的按键状态后需恢复
         if (!_input.menuOpen) return;
         if (GameManager.gameState == GameState.Run)
+        {
             GameManager.gameState = GameState.Pause;
-        //TODO: 打开菜单
+            if (InventoryCanvas != null)
+            {
+                InventoryCanvas.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("InventoryCanvas is null!");
+            }
+        }
         else
+        {
             GameManager.gameState = GameState.Run;
+            InventoryCanvas.gameObject.SetActive(false);
+        }
         _input.menuOpen = false;
     }
 
