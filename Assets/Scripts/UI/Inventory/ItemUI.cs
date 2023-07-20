@@ -13,7 +13,7 @@ namespace UI.Inventory
 
         public void SetupItemUI(ItemData_SO item, int amount)
         {
-            if (item.ItemIcon != null)
+            if (item != null && item.ItemIcon != null)
             {
                 Icon.sprite = item.ItemIcon;
                 Amount.text = amount.ToString();

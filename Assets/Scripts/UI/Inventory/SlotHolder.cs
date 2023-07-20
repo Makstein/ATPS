@@ -32,7 +32,6 @@ namespace UI.Inventory
             }
 
             var item = ItemUI.Bag.itemList[ItemUI.Index];
-            if (item.ItemDataSo == null) return;
             ItemUI.SetupItemUI(item.ItemDataSo, item.amount);
         }
     }

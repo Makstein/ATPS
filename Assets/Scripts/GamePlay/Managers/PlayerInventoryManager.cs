@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using GamePlay.Data;
 using UI.Inventory;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace GamePlay.Managers
 {
@@ -11,7 +13,11 @@ namespace GamePlay.Managers
         public ItemList_SO InventoryData;
 
         public static PlayerInventoryManager Instance;
-        
+
+        public Canvas DragCanvas;
+
+        public DragData currentDrag;
+
         [Header("Containers")] public ContainerUI InventoryUI;
 
         private void Awake()
@@ -23,5 +29,39 @@ namespace GamePlay.Managers
         {
             InventoryUI.RefreshUI();
         }
+
+        public bool CheckInInventoryUI(Vector3 position)
+        {
+            return InventoryUI.SlotHolders.Select(t1 => t1.transform as RectTransform)
+                .Any(t => RectTransformUtility.RectangleContainsScreenPoint(t, position));
+        }
+
+        public void SwapItem(int current, int target)
+        {
+            if (current == target)
+            {
+                return;
+            }
+            var targetItem = InventoryData.itemList[target];
+            var currentItem = InventoryData.itemList[current];
+            var isSameItem = targetItem.ItemDataSo == currentItem.ItemDataSo;
+            if (isSameItem)
+            {
+                targetItem.amount += InventoryData.itemList[current].amount;
+                currentItem.ItemDataSo = null;
+                currentItem.amount = 0;
+            }
+            else
+            {
+                InventoryData.itemList[current] = targetItem;
+                InventoryData.itemList[target] = currentItem;
+            }
+        }
+    }
+
+    public class DragData
+    {
+        public SlotHolder OriginSlotHolder;
+        public RectTransform originalParent;
     }
 }

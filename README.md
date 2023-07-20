@@ -21,7 +21,7 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 - [x] 添加拾取血包
 - [ ] 添加锁定系统
 - [x] 添加子弹碰撞特效
-- [ ] 背包系统
+- [x] 背包系统
 - [ ] 网络系统
 
 ## 已知问题
@@ -34,17 +34,17 @@ Unity个人练手项目，第三人称动作射击游戏，参考Unity官方第�
 
 # ATPS
 
-Personal practice unity project, a third person action shoot game, based on unity official fps template project, change the official project's control system to Cinemachine Caera & Input System third person system, add an third person player model, use Animator Controller to add some animation, the project include Enemy state machine, Nav Agent, Gun System, Damage & Health System, Enemy health dispaly and a simple gameflow event system.
+Personal practice unity project, a third person action shoot game, based on unity official fps template project, change the official project's control system to Cinema chine Camera & Input System third person system, add an third person player model, use Animator Controller to add some animation, the project include Enemy state machine, Nav Agent, Gun System, Damage & Health System, Enemy health display and a simple game flow event system.
 
 Very WIP, and I use plastic for version control, GitHub just for demonstrating, so may not update frequently.
 
-## About xlua and hotfix
+## About xLua and hotfix
 
-Hit "Generate Gameobject" button will generate a cube in scene, if you hit "HotReload" button and then hit "Generate Gameobject" button again, it will generate a sphere in scene. if you want to test it, you must have a local or remote hosting having the hotfix assetbundle, and change the resource path in xLuaHotLoad.cs according to its url.
+Hit "Generate Gameobject" button will generate a cube in scene, if you hit "HotReload" button and then hit "Generate Gameobject" button again, it will generate a sphere in scene. if you want to test it, you must have a local or remote hosting having the hotfix assetbundle, and change the resource path in xLuaHotLoad.cs according to its URL.
 
 ## Todo List
 
-- [x] Fix the werid delay when shooting
+- [x] Fix the weird delay when shooting
 - [x] Improve player model animation
 - [x] Add some lua for practice
 - [x] Improve weapon vertical control
@@ -53,13 +53,11 @@ Hit "Generate Gameobject" button will generate a cube in scene, if you hit "HotR
 - [x] Add pickup Health
 - [ ] Add lock on system
 - [x] Add projectile hit VFX
-- [ ] Inventory
+- [x] Inventory
 - [ ] Network
 
 ## Known Issues
 
 - Animation bug when sprint
-
 - Animation bug when walk/run forward left/right
-
 - Some bug about projectile
