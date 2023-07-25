@@ -25,5 +25,7 @@ namespace GamePlay.Data
         public string description;
 
         [Header("Prefab")] public GameObject Prefab;
+
+        [Header("Usable Item")] public HealthItemData_SO HealthItemData;
     }
 }

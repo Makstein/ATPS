@@ -63,6 +63,9 @@ namespace AI
             // todo: sound
         }
 
+        /// <summary>
+        /// 根据具体情况进行AI当前状态的转换
+        /// </summary>
         private void UpdateAiStateTransitions()
         {
             switch (AiState)
@@ -83,6 +86,9 @@ namespace AI
             }
         }
 
+        /// <summary>
+        /// 根据当前AI状态执行相应操作
+        /// </summary>
         private void UpdateCurrentAiState()
         {
             switch (AiState)

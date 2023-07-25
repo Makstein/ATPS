@@ -17,13 +17,13 @@ namespace Game.Managers
             // 防止为事件添加重复响应函数 Avoid to add same callback to an event
             if (s_EventLookUps.ContainsKey(evt)) return;
 
-            Action<GameEvent> newAction = e => evt((T)e);
-            s_EventLookUps[evt] = newAction;
+            void NewAction(GameEvent e) => evt((T)e); // 等同于 Action<GameEvent> newAction = e => evt((T)e)，本地函数拥有更少的额外开销
+            s_EventLookUps[evt] = NewAction;
 
             if (s_Events.TryGetValue(typeof(T), out var internalAction))
-                s_Events[typeof(T)] = internalAction + newAction;
+                s_Events[typeof(T)] = internalAction + NewAction;
             else
-                s_Events[typeof(T)] = newAction;
+                s_Events[typeof(T)] = NewAction;
         }
 
         public static void RemoveListener<T>(Action<T> evt) where T : GameEvent

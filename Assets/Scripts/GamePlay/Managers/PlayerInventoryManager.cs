@@ -30,6 +30,11 @@ namespace GamePlay.Managers
             InventoryUI.RefreshUI();
         }
 
+        /// <summary>
+        /// 遍历判断结束拖拽时当前鼠标位置是否在背包格子中
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public bool CheckInInventoryUI(Vector3 position)
         {
             return InventoryUI.SlotHolders.Select(t1 => t1.transform as RectTransform)

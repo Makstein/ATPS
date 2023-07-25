@@ -47,7 +47,7 @@ namespace Game.Shared
 
             var trueHealAmount = CurrentHealth - healthBefore;
             if (trueHealAmount > 0f)
-                //呼叫所有订阅OnHealed时间的函数
+                //呼叫所有订阅OnHealed事件的函数
                 OnHealed?.Invoke(trueHealAmount);
         }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GamePlay
 {
-    public class WeaponPickup : Pickup
+    public class EquipmentOrUsablePickup : Pickup
     {
         public ItemData_SO ItemData;
         

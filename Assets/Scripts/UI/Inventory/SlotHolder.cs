@@ -1,5 +1,7 @@
+using GamePlay.Data;
 using GamePlay.Managers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UI.Inventory
 {
@@ -11,7 +13,7 @@ namespace UI.Inventory
         ACTION,
     }
     
-    public class SlotHolder : MonoBehaviour
+    public class SlotHolder : MonoBehaviour, IPointerClickHandler
     {
         public SlotType SlotType;
         public ItemUI ItemUI;
@@ -33,6 +35,19 @@ namespace UI.Inventory
 
             var item = ItemUI.Bag.itemList[ItemUI.Index];
             ItemUI.SetupItemUI(item.ItemDataSo, item.amount);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.clickCount != 2) return;
+            
+            // Use Item
+            if (ItemUI.GetItem() != null && ItemUI.GetItem().ItemType == ItemType.Usable)
+            {
+                GameManager.Instance.PlayerHealth.Heal(ItemUI.GetItem().HealthItemData.HealthAmount);
+                ItemUI.Bag.itemList[ItemUI.Index].amount--;
+            }
+            UpdateItem();
         }
     }
 }

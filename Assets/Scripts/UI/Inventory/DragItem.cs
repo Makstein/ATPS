@@ -5,17 +5,21 @@ using UnityEngine.EventSystems;
 
 namespace UI.Inventory
 {
+    /// <summary>
+    /// 实现方式：实际上最终并不移动任何游戏对象，当开始拖拽事件时，将当前Item Slot移动到特定Canvas上以显示拖拽动画
+    /// 当拖拽事件结束时，判断是否在合理的游戏对象内，然后对物品图片进行赋值和替换，最后将Item Slot回复原位
+    /// </summary>
     [RequireComponent(typeof(ItemUI))]
     public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         private ItemUI currentItemUI;
-        private SlotHolder currentSlotHolder;
+        private SlotHolder selfSlotHolder;
         private SlotHolder targetSlotHolder;
 
         private void Awake()
         {
             currentItemUI = GetComponent<ItemUI>();
-            currentSlotHolder = GetComponentInParent<SlotHolder>();
+            selfSlotHolder = GetComponentInParent<SlotHolder>();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -49,7 +53,7 @@ namespace UI.Inventory
                     switch (targetSlotHolder.SlotType)
                     {
                         case SlotType.BAG:
-                            PlayerInventoryManager.Instance.SwapItem(currentSlotHolder.ItemUI.Index,
+                            PlayerInventoryManager.Instance.SwapItem(selfSlotHolder.ItemUI.Index,
                                 targetSlotHolder.ItemUI.Index);
                             break;
                         case SlotType.ARMOR:
@@ -60,7 +64,7 @@ namespace UI.Inventory
                             break;
                     }
                     
-                    currentSlotHolder.UpdateItem();
+                    selfSlotHolder.UpdateItem();
                     targetSlotHolder.UpdateItem();
                 }
             }

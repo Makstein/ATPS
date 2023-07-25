@@ -15,6 +15,13 @@ namespace UI.Inventory
         {
             if (item != null && item.ItemIcon != null)
             {
+                if (amount == 0)
+                {
+                    Bag.itemList[Index].ItemDataSo = null;
+                    Icon.gameObject.SetActive(false);
+                    return;
+                }
+                
                 Icon.sprite = item.ItemIcon;
                 Amount.text = amount.ToString();
                 Icon.gameObject.SetActive(true);
@@ -24,5 +31,7 @@ namespace UI.Inventory
                 Icon.gameObject.SetActive(false);
             }
         }
+
+        public ItemData_SO GetItem() => Bag.itemList[Index].ItemDataSo;
     }
 }
