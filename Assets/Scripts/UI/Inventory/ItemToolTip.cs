@@ -35,14 +35,11 @@ namespace UI.Inventory
 
             var corners = new Vector3[4];
             _rectTransform.GetWorldCorners(corners);
-
+            
             var width = corners[3].x - corners[0].x;
             var height = corners[1].y - corners[0].y;
-
-            if (mousePos.y < height)
-            {
-                _rectTransform.position = mousePos + Vector3.up * (0.6f * height);
-            }
+            
+            _rectTransform.position = mousePos + Vector3.down * (0.6f * height) + Vector3.right * (0.6f * width);
         }
 
         public void SetupToolTip(ItemData_SO item)

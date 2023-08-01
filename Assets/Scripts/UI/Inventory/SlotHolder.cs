@@ -63,10 +63,6 @@ namespace UI.Inventory
             {
                 PlayerInventoryManager.Instance.ToolTip.SetupToolTip(ItemUI.GetItem());
                 PlayerInventoryManager.Instance.ToolTip.gameObject.SetActive(true);
-
-#if UNITY_EDITOR
-                Debug.Log("Mouse enter SlotHolder");
-#endif
             }
         }
 
