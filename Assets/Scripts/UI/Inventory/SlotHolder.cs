@@ -1,3 +1,4 @@
+using System;
 using GamePlay.Data;
 using GamePlay.Managers;
 using UnityEngine;
@@ -13,10 +14,15 @@ namespace UI.Inventory
         ACTION,
     }
     
-    public class SlotHolder : MonoBehaviour, IPointerClickHandler
+    public class SlotHolder : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public SlotType SlotType;
         public ItemUI ItemUI;
+
+        private void OnDisable()
+        {
+            PlayerInventoryManager.Instance.ToolTip.gameObject.SetActive(false);
+        }
 
         public void UpdateItem()
         {
@@ -48,6 +54,25 @@ namespace UI.Inventory
                 ItemUI.Bag.itemList[ItemUI.Index].amount--;
             }
             UpdateItem();
+        }
+
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (ItemUI != null && ItemUI.GetItem())
+            {
+                PlayerInventoryManager.Instance.ToolTip.SetupToolTip(ItemUI.GetItem());
+                PlayerInventoryManager.Instance.ToolTip.gameObject.SetActive(true);
+
+#if UNITY_EDITOR
+                Debug.Log("Mouse enter SlotHolder");
+#endif
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            PlayerInventoryManager.Instance.ToolTip.gameObject.SetActive(false);
         }
     }
 }

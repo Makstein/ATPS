@@ -17,6 +17,6 @@ MonoBehaviour:
   ItemIcon: {fileID: 21300000, guid: 108f3f0394e16fc4c8e7ee1db9e95935, type: 3}
   ItemCount: 1
   Stackable: 1
-  description: 
+  description: HHHHealth
   Prefab: {fileID: 0}
   HealthItemData: {fileID: 11400000, guid: 85318b6b73316614796171a06bded91a, type: 2}

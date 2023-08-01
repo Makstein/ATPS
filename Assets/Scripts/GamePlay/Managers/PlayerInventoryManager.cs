@@ -18,6 +18,8 @@ namespace GamePlay.Managers
 
         public DragData currentDrag;
 
+        public ItemToolTip ToolTip;
+
         [Header("Containers")] public ContainerUI InventoryUI;
 
         private void Awake()
